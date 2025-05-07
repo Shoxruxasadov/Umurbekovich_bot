@@ -23,7 +23,7 @@ bot.onText(/\/start/, async (msg) => {
 
     for (let channel of channels) {
         try {
-            const member = await bot.getChatMember(channel, chatId);
+            const member = await bot.getChatMember(channel.username, chatId);
             if (['left', 'kicked'].includes(member.status)) {
                 notSubscribed.push(channel);
             }
@@ -33,18 +33,13 @@ bot.onText(/\/start/, async (msg) => {
     }
 
     if (notSubscribed.length > 0) {
-        bot.sendMessage(chatId, "Iltimos, quyidagi kanalga obuna bo‘ling:\n\nObuna bo‘lgan bo‘lsangiz, /start ni qaytadan yuboring.", {
+        bot.sendMessage(chatId, "Iltimos, quyidagi kanalga obuna bo‘ling:\n\nObuna bo‘lgan bo‘lsangiz, /start ni qaytadan bosing.", {
             reply_markup: { inline_keyboard: buttons }
         });
     } else {
-        if (!sentUsers.has(chatId)) {
-            sentUsers.add(chatId);
-            await bot.sendMessage(chatId, 'Rahmat! Siz barcha kanalga obuna bo‘lgansiz. Mana sizga fayl.');
-        }
-
-        await bot.sendDocument(chatId, fs.createReadStream("Maxsus qo'llanma.png"), {
-            caption: "Iltimos, bu faylni boshqalar bilan ulashmang.",
-            protect_content: true
+        bot.sendMessage(chatId, 'Rahmat! Siz kanalga obuna bo‘lgansiz. Mana sizga fayl:');
+        bot.sendDocument(chatId, fs.createReadStream("Maxsus qo'llanma.png"), {
+            caption: "Iltimos, bu faylni boshqalar bilan ulashmang."
         });
     }
 });
