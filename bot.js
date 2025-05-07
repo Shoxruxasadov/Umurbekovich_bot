@@ -2,7 +2,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const fs = require('fs');
 
 // TOKEN — o‘zingizning bot tokeningizni yozing
-const token = '7784691375:AAGXwH-QQyZ0f1O474UVKPfJzBDRkCsg-f4';
+const token = process.env.TELEGRAM_TOKEN;
 const bot = new TelegramBot(token, { polling: true });
 
 // Bu yerda kanal usernamesini yozing
