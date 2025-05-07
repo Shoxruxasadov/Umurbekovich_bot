@@ -7,26 +7,21 @@ const token = process.env.TELEGRAM_TOKEN;
 const bot = new TelegramBot(token, { polling: true });
 
 // Bu yerda kanal usernamesini yozing
-const requiredChannels = ['@umurbekovich'];
-
 const channels = [
-    { name: 'Umurbekovich | Blog', url: 'https://t.me/umurbekovich' }
-  ];
+    { name: 'Umurbekovich | Blog', url: 'https://t.me/umurbekovich', username: '@umurbekovich' }
+];
 
-  const buttons = channels.map(channel => [{
+const buttons = channels.map(channel => [{
     text: channel.name,
     url: channel.url
-  }]);
-
-// Fayl manzili
-const filePath = path.join(__dirname, 'file.png');
+}]);
 
 bot.onText(/\/start/, async (msg) => {
     const chatId = msg.chat.id;
 
     let notSubscribed = [];
 
-    for (let channel of requiredChannels) {
+    for (let channel of channels) {
         try {
             const member = await bot.getChatMember(channel, chatId);
             if (['left', 'kicked'].includes(member.status)) {
@@ -38,19 +33,18 @@ bot.onText(/\/start/, async (msg) => {
     }
 
     if (notSubscribed.length > 0) {
-        bot.sendMessage(chatId, "Iltimos, quyidagi kanallarga obuna bo‘ling:", {
-            reply_markup: {
-              inline_keyboard: buttons
-            }
-          });
+        bot.sendMessage(chatId, "Iltimos, quyidagi kanalga obuna bo‘ling:\n\nObuna bo‘lgan bo‘lsangiz, /start ni qaytadan yuboring.", {
+            reply_markup: { inline_keyboard: buttons }
+        });
     } else {
-        bot.sendMessage(chatId, 'Rahmat! Siz barcha kanallarga obuna bo‘lgansiz. Mana sizga fayl:');
-        bot.sendDocument(chatId, {
-            source: filePath,
-            filename: "Maxsus qo'llanma.png"
-          }, {
-            protect_content: true,
-            caption: "Iltimos, bu faylni boshqalar bilan ulashmang."
-          });
+        if (!sentUsers.has(chatId)) {
+            sentUsers.add(chatId);
+            await bot.sendMessage(chatId, 'Rahmat! Siz barcha kanalga obuna bo‘lgansiz. Mana sizga fayl.');
+        }
+
+        await bot.sendDocument(chatId, fs.createReadStream("Maxsus qo'llanma.png"), {
+            caption: "Iltimos, bu faylni boshqalar bilan ulashmang.",
+            protect_content: true
+        });
     }
 });
