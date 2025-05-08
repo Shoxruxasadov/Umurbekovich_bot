@@ -38,7 +38,7 @@ bot.onText(/\/start/, async (msg) => {
         });
     } else {
         bot.sendMessage(chatId, 'Rahmat! Siz kanalga obuna bo‘lgansiz. Mana sizga fayl:');
-        bot.sendDocument(chatId, fs.createReadStream("Maxsus qo'llanma.pdf"), {
+        bot.sendDocument(chatId, fs.createReadStream("Maxsus qo\'llanma.pdf"), {
             caption: "Iltimos, bu faylni boshqalar bilan ulashmang."
         });
     }
